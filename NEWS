@@ -1,0 +1,196 @@
+CHANGES IN VERSION 0.99.28
+------------------------
+ o update vignette with floating table of content <2015-04-08, Wed>
+ 
+CHANGES IN VERSION 0.99.27
+------------------------
+ o bug fixed, see https://github.com/GuangchuangYu/ggtree/issues/4 <2015-03-07, Tue>
+
+CHANGES IN VERSION 0.99.26
+------------------------
+ o update geom_tiplab <2015-03-31, Tue>
+ o update plot method of beast <2015-03-17, Tue>
+ 
+CHANGES IN VERSION 0.99.25
+------------------------
+ o implement groupClade <2015-03-13, Fri>
+ 
+CHANGES IN VERSION 0.99.24
+------------------------
+ o use "round" segment end, look very better <2015-03-12, Thu>
+ o update vignett <2015-03-11, Wed>
+ 
+CHANGES IN VERSION 0.99.23
+------------------------
+ o mv geom_hilight to hilight <2015-03-11, Wed>
+ o mv geom_phylopic to phylopic <2015-03-11, Wed>
+ o implement collapse and expand for collapse and expand a selected clade <2015-03-11, Wed> 
+ 
+CHANGES IN VERSION 0.99.22
+------------------------
+ o remove quote in beast tip/node labels <2015-03-10, Tue>
+ 
+CHANGES IN VERSION 0.99.21
+------------------------
+ o fixed downloading png file in Windows platform, should explicitly setting mode="wb". <2015-03-03, Tue>
+ 
+CHANGES IN VERSION 0.99.19
+------------------------
+ o for time scale tree inferred by BEAST, now user can use time_scale=TRUE parameter in ggtree function <2015-02-12, Thu>
+ 
+CHANGES IN VERSION 0.99.18
+------------------------
+ o bug fixed in reorder the labels in gplot.heatmap <2015-02-12, Thu>
+ 
+CHANGES IN VERSION 0.99.17
+------------------------
+ o add angle and branch.y variable in cladogram layout <2015-02-10, Tue>
+ 
+CHANGES IN VERSION 0.99.16
+------------------------
+ o correct typo in vignette <2015-02-10, Tue>
+
+CHANGES IN VERSION 0.99.15
+------------------------
+ o fully support of replace operator, %<% <2015-02-09, Mon>
+ 
+CHANGES IN VERSION 0.99.14
+------------------------
+ o add example in groupOTU for adding legend manually <2015-02-09, Mon>.
+
+CHANGES IN VERSION 0.99.13
+------------------------
+ o two dimensional tree <2015-02-06, Fri>
+ 
+CHANGES IN VERSION 0.99.12
+------------------------
+ o update vignette <2015-02-04, Wed>
+ o gzoom methods that supports all tree objects <2015-02-04, Wed>
+ o geom_hilight layer for highlighting clade <2015-02-04, Wed> 
+ 
+CHANGES IN VERSION 0.99.11
+------------------------
+ o add scale_color to support colored lines and text based on numerical values and update vignette <2015-02-04, Wed>
+ o revised groupOTU that output index can be used in geom_text and update vignette <2015-02-04, Wed>
+
+CHANGES IN VERSION 0.99.10
+------------------------
+ o support y scale by category variable <2015-02-03, Tue>
+ o support order nodes by yscale <2015-02-03, Tue>
+
+CHANGES IN VERSION 0.99.9
+------------------------
+ o update vignette <2015-02-02, Mon>
+ 
+CHANGES IN VERSION 0.99.8
+------------------------
+ o add get.phylopic function to read the online phylo pic and convert it to grob object,
+   which can be use to annotate ggplot figure using annotation_custom <2015-01-30, Fri>
+ 
+CHANGES IN VERSION 0.99.7
+------------------------
+ o add angle information for 'fan' & 'unrooted' layout <2015-01-29, Thu>
+
+CHANGES IN VERSION 0.99.6
+------------------------
+ o read.beast now supports support values of sets such as {x, y, z} <2015-01-19, Mon>
+ o now read.beast supports characters in support values <2015-01-18, Sun>
+ o add example of gzoom and groupOTU in vignette <2015-01-14, Wed> 
+ o implement groupOTU methods <2015-01-14, Wed>
+ o export get.offspring.tip <2015-01-14, Wed>
+
+CHANGES IN VERSION 0.99.5
+------------------------
+ o move ape and ggplot2 from Depends to Imports <2015-01-12, Mon>
+ o get.tipseq method for paml_rst and codeml object <2015-01-08, Thu>
+ o add gzoom function, similar to zoom function in ape <2015-01-07, Wed>
+ o add examples in man pages of %<% and %<+% operators <2015-01-06, Tue>
+ o remove <<- and update vignette <2015-01-06, Tue>
+ o update vignette and use BibTex and CSL for references <2015-01-05, Mon>  
+ o update cladogram layout <2015-01-05, Mon>
+ o read.baseml function and update vignette with baseml example <2015-01-04, Sun>
+ o plot method for hyphy and hyphy example in vignette <2015-01-04, Sun>
+ o merge all vignettes to ggtree vignette <2015-01-04, Sun>
+
+CHANGES IN VERSION 0.99.4
+------------------------
+ o ggtree now support branch.length = "none" to only draw tree topology <2015-01-03, Sat> 
+ o get.subs method for hyphy object <2015-01-03, Sat>
+ o show, get.tree and get.subs methods of hyphy <2015-01-02, Fri> 
+ o export read.hyphy <2015-01-02, Fri>
+ o export hyphy class <2015-01-01, Thu>
+ o plot method for beast class and get.tree method for codeml class <2014-12-31, Wed>
+ o show, get.fields, get.subs and plot methods for codeml class <2014-12-30, Tue>
+ o plot method for paml_rst class <2014-12-30, Tue>
+ o get.subs, method for paml_rst class <2014-12-30, Tue>
+ o show, plot, get.tree and fority methods for codeml_mlc class <2014-12-29, Mon>
+ o codeml class <2014-12-29, Mon>
+ o hyphy class and read.hyphy prototype <2014-12-27, Sat>
+ o update man file and add example file of beast output <2014-12-26, Fri>
+ o get.tree and get.fileds methods of beast class <2014-12-26, Fri>
+ o read.beast <2014-12-26, Fri>
+ o beast class and show method <2014-12-26, Fri> 
+ o coplot prototype<2014-12-24, Wed>
+ o parse translation matrix in beast nexus <2014-12-24, Wed>
+ o extract beast stats info <2014-12-23, Tue>
+
+CHANGES IN VERSION 0.99.3
+------------------------
+ o gplot function that can view a tree and an associated matrix simultaneously <2014-12-22, Mon>
+ o modified vignette to show based on branch position and break the evolution distance scale <2014-12-22, Mon>
+ o label and annotation can be put based on branch. <2014-12-22, Mon>
+ o write.jplace and fully supports of jplace by ggtree. <2014-12-21, Sun>
+ o support unrooted layout in ggplot. <2014-12-21, Sun>
+ o support fan, radial, dendrogram layout in geom_tree. <2014-12-21, Sun>
+ 
+CHANGES IN VERSION 0.99.2
+------------------------
+ o layout of unrooted tree, implemented equal-angle algorithm that described in Chapter 34
+   of 'Inferring Phylogenies' (page 578-580) <2014-12-20, Sat>
+ o add layout parameter in ggtree and geom_tree, now supports phylogram and cladogram <2014-12-20, Sat>
+ o %<+% function for inserting annotation data to a tree view <2014-12-20, Sat>
+ o update ggtree-treeAnnotation vignette <2014-12-20, Sat>
+
+CHANGES IN VERSION 0.99.1
+------------------------
+ o %<% function for updating tree view with a new tree <2014-12-19, Fri>
+ o add examples in man files <2014-12-19, Fri>
+
+CHANGES IN VERSION 0.2.3
+------------------------
+ o add README.md <2014-12-19, Fri>
+ o update ggtree-treeViewer vignette <2014-12-19, Fri>
+ o use BiocStyle in vignette <2014-12-19, Fri>
+ o geom_nplace and geom_place layer <2014-12-18, Thu>
+ o add theme_tree2 theme for showing evolution distance <2014-12-18, Thu>
+ o rm.singleton.newick now supports internal node like:
+   ((()X, ()Y)Z)AA, in which Z is a singleton. <2014-12-15, Mon>
+
+CHANGES IN VERSION 0.2.2
+------------------------
+ o rm.singleton.newick <2014-12-09, Tue>
+ o as.binary method <2014-12-09, Tue>
+
+CHANGES IN VERSION 0.2.1
+------------------------
+ o geom_eplace <2014-12-07, Sun>
+
+CHANGES IN VERSION 0.2.0
+------------------------
+ o read.jplace to read the jplace file <2014-12-05, Fri>
+ o jplace class for storing information of jplace file <2014-12-05, Fri>
+ o show method of jplace class <2014-12-05, Fri>
+ o get.tree method to get tree from jplace class <2014-12-05, Fri>
+ o extend ggplot2 to support jplace class <2014-12-05, Fri>
+
+CHANGES IN VERSION 0.1.1
+------------------------
+ o add distance legend in ggtree <2014-12-05, Fri>
+
+CHANGES IN VERSION 0.1.0
+------------------------
+ o support ladderize tree <2014-12-05, Fri>
+ o implement geom_tree, geom_tiplab, geom_tippoint, geom_aline and theme_tree <2014-12-04, Thu>
+ o extend ggplot to support phylo object and implement ggtree function <2014-12-04, Thu>
+ o implement fortify function <2014-12-04, Thu>
+ o add getRoot, isRoot and getParent functions <2014-12-03, Wed>
