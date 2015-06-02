@@ -18,10 +18,6 @@ scale_color_ <- function(phylo, by, low=NULL, high=NULL, na.color=NULL, default.
         cols <- rainbow_hcl(n)
     }
 
-    ## if (by == "dN_vs_dS") {
-    ##     interval <- seq(0, 1.5, length.out = 100)
-    ## } 
-
     idx <- getIdx(vals, MIN=MIN, MAX=MAX, interval=interval)
     interval <- attr(idx, "interval")
     
@@ -800,3 +796,11 @@ add_angle_cladogram <- function(res) {
     return(res)
 }
 
+calculate_branch_mid <- function(res) {
+    res$branch <- (res[res$parent, "x"] + res[, "x"])/2
+    if (!is.null(res$length)) {
+        res$length[is.na(res$length)] <- 0
+    }
+    res$branch[is.na(res$branch)] <- 0
+    return(res)
+}

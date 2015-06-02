@@ -295,6 +295,66 @@ hilight <- function(tree_view, node, fill="steelblue", alpha=0.5, ...) {
                          fill = fill, alpha = alpha, ...)
 }
 
+##' scale clade
+##'
+##' 
+##' @title scaleClade
+##' @param tree_view tree view
+##' @param node clade node
+##' @param scale scale
+##' @param vertical_only logical. If TRUE, only vertical will be scaled.
+##' If FALSE, the clade will be scaled vertical and horizontally.
+##' TRUE by default.
+##' @return tree view
+##' @export
+##' @author Guangchuang Yu
+scaleClade <- function(tree_view, node, scale=1, vertical_only=TRUE) {
+    if (scale == 1) {
+        return(tree_view)
+    }
+    
+    df <- tree_view$data
+    sp <- get.offspring.df(df, node)
+    sp.df <- df[sp,]
+    
+    ## sp_nr <- nrow(sp.df)
+    ## span <- diff(range(sp.df$y))/sp_nr
+    
+    ## new_span <- span * scale
+    old.sp.df <- sp.df
+    sp.df$y <- df[node, "y"] + (sp.df$y - df[node, "y"]) * scale
+    if (vertical_only == FALSE) {
+        sp.df$x <- df[node, "x"] + (sp.df$x - df[node, "x"]) * scale
+    }
+    
+    scale_diff.up <- max(sp.df$y) - max(old.sp.df$y)
+    scale_diff.lw <- min(sp.df$y) - min(old.sp.df$y)
+    
+    ii <- df$y > max(old.sp.df$y)
+    if (sum(ii) > 0) {
+        df[ii, "y"] <- df[ii, "y"] + scale_diff.up
+    }
+    
+    jj <- df$y < min(old.sp.df$y)
+    if (sum(jj) > 0) {
+        df[jj, "y"] <- df[jj, "y"] + scale_diff.lw
+    }
+    
+    df[sp,] <- sp.df
+    
+    if (! "scale" %in% colnames(df)) {
+        df$scale <- 1
+    }
+    df[sp, "scale"] <- df[sp, "scale"] * scale
+
+    ## re-calculate branch mid position
+    df <- calculate_branch_mid(df)
+    
+    tree_view$data <- df
+    tree_view
+}
+
+
 ##' collapse a clade
 ##'
 ##' 
@@ -329,6 +389,9 @@ collapse <- function(tree_view, node) {
     j <- getChild.df(df, pp)
     j <- j[j!=pp]
     df[pp, "y"] <- mean(df[j, "y"])
+
+    ## re-calculate branch mid position
+    df <- calculate_branch_mid(df)
     
     tree_view$data <- df
     clade <- paste0("clade_", node)
@@ -370,6 +433,9 @@ expand <- function(tree_view, node) {
     j <- getChild.df(df, pp)
     j <- j[j!=pp]
     df[pp, "y"] <- mean(df[j, "y"])
+
+    ## re-calculate branch mid position
+    df <- calculate_branch_mid(df)
     
     tree_view$data <- df
     attr(tree_view, clade) <- NULL
@@ -422,8 +488,52 @@ add_colorbar <- function(p, color, x=NULL, ymin=NULL, ymax=NULL, font.size=4) {
 
     i <- seq(1, length(y), length.out = 5) %>% round(0)
     offset <- diff(range(p$data$x))/40
+    barwidth <- offset/5
+    
     p + annotate("text", x=x+offset*2, y=y[i], label=legend[i,1], size=font.size) +
         annotate("rect", xmin=x, xmax=x+offset, ymin=ymin,
-                 ymax = ymax, fill=legend[,2], color=legend[,2]) 
+                 ymax = ymax, fill=legend[,2], color=legend[,2]) +
+                     annotate("segment", x=x, xend=x+barwidth, y=y[i], yend=y[i], color="white") +
+                         annotate("segment", x=x+offset-barwidth, xend=x+offset, y=y[i], yend=y[i], color="white")
     
+}
+
+##' add evolution distance legend
+##'
+##' 
+##' @title add_legend
+##' @param p tree view
+##' @param x x position
+##' @param y y position
+##' @param offset offset of text and line
+##' @param font.size font size
+##' @param ... additional parameter
+##' @return tree view
+##' @export
+##' @author Guangchuang Yu
+add_legend <- function(p, x=NULL, y=NULL, offset=NULL, font.size=4, ...) {
+    if (is.null(x)) {
+        x <- min(p$data$x)
+    }
+    if (is.null(y)) {
+        y <- -0.5
+    }
+
+    d <- p$data$x %>% range %>% diff
+    d <- d/20 
+    n <- 0
+    while (d < 1) {
+        d <- d*10
+        n <- n + 1
+    }
+    d <- floor(d)/(10^n)
+    if (is.null(offset)) {
+        offset <- p$data$y %>% range %>% diff
+        offset <- offset / 100
+    }
+    p <- p + geom_segment(x=x, y=y, xend=x+d, yend=y, ...) +
+        geom_text(x=x+d/2, y=y-offset, label=d, size=font.size, ...) +
+            geom_segment(x=x, y=y-offset/2, xend=x, yend=y+offset/2, ...) +
+                geom_segment(x=x+d, y=y-offset/2, xend=x+d, yend=y+offset/2, ...)
+    return(p)
 }
