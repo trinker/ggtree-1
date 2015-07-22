@@ -59,6 +59,7 @@ ggtree <- function(tr,
         p <- p + scale_x_reverse() + coord_flip()
     } else if (type == "fan" || type == "radial") {
         p <- p + coord_polar(theta = "y")
+        p <- p + scale_y_continuous(limits=c(0, max(p$data$y)))
     } 
     
     if (showDistance == FALSE) {
