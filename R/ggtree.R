@@ -186,7 +186,7 @@ geom_tiplab <- function(mapping=NULL, hjust = 0, align = FALSE, linetype = "dott
     }
 
     dot_mapping <- NULL
-    if (align && (!is.na(linetype) || !is.null(linetype))) {
+    if (align && (!is.na(linetype) && !is.null(linetype))) {
         dot_mapping <- aes(xend=x+diff(range(x))/200, x=max(x), yend=y)
         if (!is.null(mapping)) {
             dot_mapping <- modifyList(dot_mapping, mapping)
