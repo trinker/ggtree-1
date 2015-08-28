@@ -57,9 +57,9 @@ rm.singleton.newick <- function(nwk, outfile = NULL) {
     tree <- readLines(nwk)
 
     ## remove singleton of tips
-    nodePattern <- "\\w+:[\\.0-9]+"
-    singletonPattern.with.nodename <- paste0(".*(\\(", nodePattern, "\\)\\w+:[\\.0-9]+).*")
-    singletonPattern.wo.nodename <- paste0(".*(\\(", nodePattern, "\\)[\\.0-9]+).*")
+    nodePattern <- "\\w+:[\\.0-9Ee\\+\\-]+"
+    singletonPattern.with.nodename <- paste0(".*(\\(", nodePattern, "\\)\\w+:[\\.0-9Ee\\+\\-]+).*")
+    singletonPattern.wo.nodename <- paste0(".*(\\(", nodePattern, "\\)[\\.0-9Ee\\+\\-]+).*")
     
     while(length(grep("\\([^,]+\\)", tree)) > 0) {
         singleton <- gsub(singletonPattern.with.nodename, "\\1", tree)
@@ -72,8 +72,8 @@ rm.singleton.newick <- function(nwk, outfile = NULL) {
 
         tip <- gsub("\\((\\w+).*", "\\1", singleton)
         
-        len1 <- gsub(".*[^\\.0-9]+([\\.0-9]+)", "\\1", singleton)
-        len2 <- gsub(".*:([.0-9]+)\\).*", "\\1", singleton)
+        len1 <- gsub(".*[^\\.0-9Ee\\+\\-]+([\\.0-9Ee\\+\\-]+)", "\\1", singleton)
+        len2 <- gsub(".*:([\\.0-9Ee\\+\\-]+)\\).*", "\\1", singleton)
         len <- as.numeric(len1) + as.numeric(len2)
         
         tree <- gsub(singleton, paste0(tip, ":", len), tree, fixed = TRUE)
@@ -105,7 +105,7 @@ rm.singleton.newick <- function(nwk, outfile = NULL) {
 ##' @method fortify beast
 ##' @export
 fortify.beast <- function(model, data,
-                          layout    = "phylogram",
+                          layout    = "rectangular",
                           yscale    = "none",
                           ladderize = TRUE,
                           right     =FALSE,
@@ -213,7 +213,7 @@ scaleX_by_time <- function(df) {
 ##' @method fortify codeml
 ##' @export
 fortify.codeml <- function(model, data,
-                           layout        = "phylogram",
+                           layout        = "rectangular",
                            yscale        = "none",
                            ladderize     = TRUE,
                            right         = FALSE,
@@ -257,7 +257,7 @@ fortify.codeml <- function(model, data,
 ##' @method fortify codeml_mlc
 ##' @export
 fortify.codeml_mlc <- function(model, data,
-                               layout        = "phylogram",
+                               layout        = "rectangular",
                                yscale        = "none",
                                ladderize     = TRUE,
                                right         = FALSE,
@@ -296,7 +296,7 @@ merge_phylo_anno.codeml_mlc <- function(df, dNdS, ndigits = NULL) {
 }
 
 fortify.codeml_mlc_ <- function(model, data,
-                                layout        = "phylogram",
+                                layout        = "rectangular",
                                 ladderize     = TRUE,
                                 right         = FALSE,
                                 branch.length = "branch.length",                           
@@ -324,7 +324,7 @@ fortify.codeml_mlc_ <- function(model, data,
     
 ##' @method fortify paml_rst
 ##' @export
-fortify.paml_rst <- function(model, data, layout = "phylogram", yscale="none",
+fortify.paml_rst <- function(model, data, layout = "rectangular", yscale="none",
                              ladderize=TRUE, right=FALSE, ...) {
     df <- fortify.phylo(model@phylo, data, layout, ladderize, right, ...)
     df <- merge_phylo_anno.paml_rst(df, model)
@@ -351,7 +351,7 @@ fortify.hyphy <- fortify.paml_rst
 ##' @importFrom ape read.tree
 ##' @export
 fortify.jplace <- function(model, data,
-                           layout="phylogram", yscale="none",
+                           layout="rectangular", yscale="none",
                            ladderize=TRUE, right=FALSE, ...) {
     df <- get.treeinfo(model, layout, ladderize, right, ...)
     place <- get.placements(model, by="best")
@@ -383,8 +383,8 @@ scaleY <- function(phylo, df, yscale, layout, ...) {
     }
     
     df[, "y"] <- y
-    if (layout == "cladogram") {
-        df <- add_angle_cladogram(df)
+    if (layout == "slanted") {
+        df <- add_angle_slanted(df)
     }
     return(df)
 }
@@ -392,7 +392,7 @@ scaleY <- function(phylo, df, yscale, layout, ...) {
 
 ##' @method fortify phylo4
 ##' @export
-fortify.phylo4 <- function(model, data, layout="phylogram", yscale="none",
+fortify.phylo4 <- function(model, data, layout="rectangular", yscale="none",
                            ladderize=TRUE, right=FALSE, ...) {
     phylo <- as.phylo.phylo4(model)
     df <- fortify.phylo(phylo, data,
@@ -437,7 +437,7 @@ as.phylo.phylo4 <- function(phylo4) {
 ##' @method fortify phylo
 ##' @export
 ##' @author Yu Guangchuang
-fortify.phylo <- function(model, data, layout="phylogram", 
+fortify.phylo <- function(model, data, layout="rectangular", 
                           ladderize=TRUE, right=FALSE, ...) {
     if (ladderize == TRUE) {
         tree <- ladderize(model, right=right)
@@ -451,11 +451,11 @@ fortify.phylo <- function(model, data, layout="phylogram",
     rownames(df) <- df$node
     cn <- colnames(df)
     colnames(df)[grep("length", cn)] <- "branch.length"
-    if(layout == "cladogram") {
-        df <- add_angle_cladogram(df)
+    if(layout == "slanted") {
+        df <- add_angle_slanted(df)
     }
     aa <- names(attributes(tree))
-    group <- aa[ ! aa %in% c("names", "class", "order")]
+    group <- aa[ ! aa %in% c("names", "class", "order", "reroot", "node_map")]
     if (length(group) > 0) {
         ## groupOTU & groupClade
         group_info <- attr(tree, group)
@@ -477,14 +477,14 @@ fortify.phylo <- function(model, data, layout="phylogram",
 ##' @export
 ##' @author Yu Guangchuang
 as.data.frame.phylo <- function(x, row.names, optional,
-                                layout="phylogram", ...) {
+                                layout="rectangular", ...) {
     if (layout == "unrooted") {
         return(layout.unrooted(x))
     } 
     as.data.frame.phylo_(x, layout, ...)
 }
 
-as.data.frame.phylo_ <- function(x, layout="phylogram",
+as.data.frame.phylo_ <- function(x, layout="rectangular",
                                  branch.length="branch.length", ...) {
     tip.label <- x[["tip.label"]]
     Ntip <- length(tip.label)
@@ -531,7 +531,7 @@ as.data.frame.phylo_ <- function(x, layout="phylogram",
     ## add branch mid position
     res <- calculate_branch_mid(res)
     
-    if (layout == "fan") {
+    if (layout == "circular") {
         idx <- match(1:N, order(res$y))
         angle <- -360/(N+1) * 1:N
         angle <- angle[idx]

@@ -114,11 +114,22 @@ setMethod("show", signature(object = "paml_rst"),
               ## } else {
               ##     cat(".\n\n")
               ## }
+              fields <- get.fields(object)
+
+              if (nrow(object@marginal_subs) == 0) {
+                  fields <- fields[fields != "marginal_subs"]
+                  fields <- fields[fields != "marginal_AA_subs"]
+              }
+              if (nrow(object@joint_subs) == 0) {
+                  fields <- fields[fields != "joint_subs"]
+                  fields <- fields[fields != "joint_AA_subs"]
+              }
+              
               cat("...@ tree:")
               print.phylo(get.tree(object))                  
               cat("\nwith the following features available:\n")
               cat("\t", paste0("'",
-                               paste(get.fields(object), collapse="',\t'"),
+                               paste(fields, collapse="',\t'"),
                                "'."),
                   "\n")
           })
@@ -130,7 +141,7 @@ setMethod("get.fields", signature(object = "paml_rst"),
               if (length(object@tip_seq) == 0) {
                   warning("tip sequence not available...\n")
               } else {
-                  get.fields.tree(object)
+                  get.fields.tree(object) 
               }
           }
           )
@@ -146,7 +157,7 @@ setMethod("get.tree", signature(object = "paml_rst"),
 ##' @rdname plot-methods
 ##' @exportMethod plot
 setMethod("plot", signature(x = "paml_rst"),
-          function(x, layout        = "phylogram",
+          function(x, layout        = "rectangular",
                    show.tip.label   = TRUE,
                    tip.label.size   = 4,
                    tip.label.hjust  = -0.1,

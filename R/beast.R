@@ -45,7 +45,7 @@ read.beast <- function(file) {
 ##' beast <- read.beast(file)
 ##' plot(beast, annotation="length_0.95_HPD", branch.length="none") + theme_tree()
 setMethod("plot", signature( x= "beast"),
-          function(x, layout = "phylogram",
+          function(x, layout = "rectangular",
                    branch.length = "branch.length",
                    show.tip.label = TRUE,
                    tip.label.size = 4,
@@ -346,5 +346,19 @@ read.stats_beast <- function(file) {
     stats3$node <- names(stats)
     return(stats3)
 }
+
+
+##' @rdname reroot-methods
+##' @exportMethod reroot
+setMethod("reroot", signature(object="beast"),
+          function(object, node, ...) {
+              object@phylo <- reroot(object@phylo, node, ...)
+
+              node_map <- attr(object@phylo, "node_map")
+              idx <- match(object@stats$node, node_map[,1])
+              object@stats$node <- node_map[idx, 2]
+              
+              return(object)
+          })
 
 

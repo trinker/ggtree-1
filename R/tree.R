@@ -1,3 +1,35 @@
+reroot_node_mapping <- function(tree, tree2) {
+    root <- getRoot(tree)
+
+    node_map <- data.frame(from=1:getNodeNum(tree), to=NA, visited=FALSE)
+    node_map[1:Ntip(tree), 2] <- match(tree$tip.label, tree2$tip.label)
+    node_map[1:Ntip(tree), 3] <- TRUE
+
+    node_map[root, 2] <- root
+    node_map[root, 3] <- TRUE
+
+    node <- rev(tree$edge[,2])
+    for (k in node) {
+        ip <- getParent(tree, k)
+        if (node_map[ip, "visited"])
+            next
+        
+        cc <- getChild(tree, ip)
+        node2 <- node_map[cc,2]
+        if (any(is.na(node2))) {
+            node <- c(node, k)
+            next
+        }
+        
+        to <- unique(sapply(node2, getParent, tr=tree2))
+        to <- to[! to %in% node_map[,2]]
+        node_map[ip, 2] <- to
+        node_map[ip, 3] <- TRUE
+    }
+    node_map <- node_map[, -3]
+    return(node_map)
+}
+
 
 ##' @importFrom colorspace rainbow_hcl
 scale_color_ <- function(phylo, by, low=NULL, high=NULL, na.color=NULL, default.color="darkgrey", interval=NULL) {
@@ -148,8 +180,7 @@ gzoom.phylo <- function(phy, focus, subtree=FALSE, widths=c(.3, .7)) {
 ##' library("ggplot2")
 ##' nwk <- system.file("extdata", "sample.nwk", package="ggtree")
 ##' tree <- read.tree(nwk)
-##' p <- ggtree(tree) + geom_point(subset=.(!isTip), 
-##'         	       color="#b5e521", alpha=1/4, size=10)
+##' p <- ggtree(tree) + geom_tippoint(color="#b5e521", alpha=1/4, size=10)
 ##' p %<% rtree(30)
 `%<%` <- function(pg, x) {
     if (! is.tree(x)) {
@@ -554,7 +585,7 @@ getXcoord <- function(tr) {
     return(x)
 }
 
-getXYcoord_cladogram <- function(tr) {
+getXYcoord_slanted <- function(tr) {
     
     edge <- tr$edge
     parent <- edge[,1]
@@ -814,7 +845,7 @@ getYcoord_scale_category <- function(tr, df, yscale, yscale_mapping=NULL, ...) {
 }
 
 
-add_angle_cladogram <- function(res) {
+add_angle_slanted <- function(res) {
     dy <- (res[, "y"] - res[res$parent, "y"]) / diff(range(res[, "y"]))
     dx <- (res[, "x"] - res[res$parent, "x"]) / diff(range(res[, "x"]))
     theta <- atan(dy/dx)
