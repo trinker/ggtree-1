@@ -208,3 +208,32 @@ setClass("beast",
              extraInfo   = "data.frame"
              )
          )
+
+
+##' Class "raxml"
+##' This class stores RAxML bootstrapping analysis result
+##'
+##'
+##' @name raxml-class
+##' @docType class
+##' @slot file input file
+##' @slot fields available features
+##' @slot treetext tree text
+##' @slot phylo phylo object of treetext
+##' @slot bootstrap bootstrap value
+##' @slot extraInfo extra information
+##' @exportClass raxml
+##' @author Guangchuang Yu \url{http://ygc.name}
+##' @keywords classes
+setClass("raxml",
+         representation = representation(
+             file       = "character",
+             fields     = "character",
+             treetext   = "character",
+             phylo      = "phylo",
+             bootstrap  = "data.frame",
+             extraInfo  = "data.frame"
+             )
+         )
+
+
