@@ -598,6 +598,26 @@ raxml <- read.raxml(raxml_file)
 plot(raxml)
 ```
 
+## annotating tree with r8s output
+
+[r8s](http://loco.biosci.arizona.edu/r8s/) output contains 3 trees, namely `TREE`, `RATO` and `PHYLO` for time tree, rate tree and absolute substitution tree respectively.
+
+```{r fig.width=4, fig.height=6, width=60, warning=FALSE, fig.align="center"}
+r8s <- read.r8s(system.file("extdata/r8s", "H3_r8s_output.log", package="ggtree"))
+ggtree(r8s, branch.length="TREE", mrsd="2014-01-01") + theme_tree2()
+```
+
+
+`branch.length` should be one of `TREE`, `RATO` or `PHYLO` for selecting the corresponding tree.
+
+User can also view 3 trees simultaneously.
+
+
+```{r fig.width=16, fig.height=10, width=60, warning=FALSE, fig.align="center"}
+ggtree(get.tree(r8s)) + facet_wrap(~.id, scales="free_x") + theme_tree2()
+```
+
+
 
 
 ## annotating tree with EPA and PPLACER output

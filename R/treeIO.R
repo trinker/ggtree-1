@@ -564,7 +564,7 @@ fortify.raxml <- function(model, data, layout= "rectangular",
                           ladderize=TRUE, right=FALSE, mrsd=NULL, ...) {
     df <- fortify(get.tree(model), layout=layout, ladderize=ladderize, right=right, mrsd=mrsd, ...)
     df <- merge(df, model@bootstrap, by.x="node", by.y="node", all.x=TRUE)
-    return(df)
+    append_extraInfo(df, model)
 }
 
 
@@ -581,10 +581,21 @@ fortify.multiPhylo <-  function(model, data, layout="rectangular",
     }
     df <- do.call("rbind", df.list)
     df$.id <- rep(names(df.list), times=sapply(df.list, nrow))
-
+    df$.id <- factor(df$.id, levels=names(df.list))
+    
     nNode <- sapply(df.list, nrow)
     nNode2 <- cumsum(nNode) - nNode[1]
     df$parent <- df$parent + rep(nNode2, times=nNode)
     return(df)
 }
 
+##' @method fortify r8s
+##' @export
+fortify.r8s <- function(model, data, layout="rectangular",
+                        ladderize=TRUE, right=FALSE,
+                        branch.length = "TREE", mrsd=NULL, ...) {
+    trees <- get.tree(model)
+    branch.length %<>% match.arg(names(trees))
+    phylo <- trees[[branch.length]]
+    fortify(phylo, layout=layout, ladderize = ladderize, right=right, mrsd=mrsd, ...)
+}

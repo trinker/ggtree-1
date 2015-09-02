@@ -66,7 +66,11 @@ has.extraInfo <- function(object) {
 append_extraInfo <- function(df, object) {
     if (has.extraInfo(object)) {
         info <- object@extraInfo
-        res <- merge(df, info, by.x=c("node", "parent"), by.y=c("node", "parent"))
+        if ("parent" %in% colnames(info)) {
+            res <- merge(df, info, by.x=c("node", "parent"), by.y=c("node", "parent"))
+        } else {
+            res <- merge(df, info, by.x="node", by.y="node")
+        }
     } else {
         res <- df
     }
@@ -277,11 +281,11 @@ jplace_treetext_to_phylo <- function(tree.text) {
     return(phylo)
 }
 
-extract.treeinfo.jplace <- function(object, layout="phylogram", ladderize=TRUE, right=FALSE) {
+extract.treeinfo.jplace <- function(object, layout="phylogram", ladderize=TRUE, right=FALSE, ...) {
 
     tree <- get.tree(object)
     
-    df <- fortify.phylo(tree, layout=layout, ladderize=ladderize, right=right)
+    df <- fortify.phylo(tree, layout=layout, ladderize=ladderize, right=right, ...)
 
     edgeNum <- attr(tree, "edgeNum")
     if (!is.null(edgeNum)) {

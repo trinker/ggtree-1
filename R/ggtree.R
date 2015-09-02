@@ -41,6 +41,10 @@ ggtree <- function(tr,
                    ndigits = NULL, ...) {
 
     layout %<>% match.arg(c("rectangular", "slanted", "fan", "circular", "radial", "unrooted"))
+
+    if (is(tr, "r8s") && branch.length == "branch.length") {
+        branch.length = "TREE"
+    }
     
     d <- x <- y <- NULL
     if(yscale != "none") {
@@ -62,7 +66,7 @@ ggtree <- function(tr,
     }
     p <- ggplot(tr, mapping=mapping,
                 layout        = layout,
-                mrsd    = mrsd,
+                mrsd          = mrsd,
                 yscale        = yscale,
                 yscale_mapping= yscale_mapping,
                 ladderize     = ladderize,
